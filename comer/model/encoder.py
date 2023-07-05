@@ -252,11 +252,9 @@ class Encoder(pl.LightningModule):
                         "b6": (528, 0.942),
                         "b7": (600, 0.949)}
         net_h = img_preparam[arch][0]
-        model = EfficientNet(arch=arch)
+        self.model = EfficientNet(arch=arch)
 
-        self.model = ConvNextEncoder(in_channels=1, stem_features=64, depths=[3,4,6,4], widths=[256, 512])
-
-        self.feature_proj = nn.Conv2d(512, d_model, kernel_size=1)
+        self.feature_proj = nn.Conv2d(1280, d_model, kernel_size=1)
 
         self.pos_enc_2d = ImgPosEnc(d_model, normalize=True)
 
