@@ -115,7 +115,7 @@ class ConvNextEncoder(nn.Module):
 
         for stage in self.stages:
             x = stage(x)
-        x_mask = x_mask[:,0:7,0:7]
+        x_mask = x_mask[:,0:8,0:8]
         return x ,x_mask
 
 class Encoder(pl.LightningModule):
