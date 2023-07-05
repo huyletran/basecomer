@@ -22,25 +22,29 @@ class Encoder(pl.LightningModule):
         self, img: FloatTensor, img_mask: LongTensor
     ) -> Tuple[FloatTensor, LongTensor]:
         """encode image to feature
+
         Parameters
         ----------
         img : FloatTensor
             [b, 1, h', w']
         img_mask: LongTensor
             [b, h', w']
+
         Returns
         -------
         Tuple[FloatTensor, LongTensor]
             [b, h, w, d], [b, h, w]
         """
         # extract feature
-        feature = self.model.extract_features(img)  # EfficientNet feature extraction
+        feature, mask = self.model(img, img_mask)
         feature = self.feature_proj(feature)
+
         # proj
-        feature = feature.permute(0, 2, 3, 1)
+        feature = rearrange(feature, "b d h w -> b h w d")
+
         # positional encoding
-        feature = self.pos_enc_2d(feature, img_mask)
+        feature = self.pos_enc_2d(feature, mask)
         feature = self.norm(feature)
+
         # flat to 1-D
-        feature = feature.permute(0, 3, 1, 2)
-        return feature, img_mask
+        return feature, mask
