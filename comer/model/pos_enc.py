@@ -99,7 +99,7 @@ class ImgPosEnc(pl.LightningModule):
 
         pos_x = torch.stack((pos_x.sin(), pos_x.cos()), dim=4).flatten(3)
         pos_y = torch.stack((pos_y.sin(), pos_y.cos()), dim=4).flatten(3)
-        pos = torch.cat((pos_x, pos_y), dim=4)
+        pos = torch.cat((pos_x, pos_y), dim=3)
 
         x = x + pos
         return x
