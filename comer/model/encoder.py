@@ -33,16 +33,16 @@ class ConvNexStage(nn.Sequential):
                 for _ in range(depth)
             ],
         )
-from torchvision.ops import StochasticDepth
+# from torchvision.ops import StochasticDepth
 
-class LayerScaler(nn.Module):
-    def __init__(self, init_value: float, dimensions: int):
-        super().__init__()
-        self.gamma = nn.Parameter(init_value * torch.ones((dimensions)),
-                                    requires_grad=True)
+# class LayerScaler(nn.Module):
+#     def __init__(self, init_value: float, dimensions: int):
+#         super().__init__()
+#         self.gamma = nn.Parameter(init_value * torch.ones((dimensions)),
+#                                     requires_grad=True)
 
-    def forward(self, x):
-        return self.gamma[None,...,None,None] * x
+#     def forward(self, x):
+#         return self.gamma[None,...,None,None] * x
 
 class BottleNeckBlock(nn.Module):
     def __init__(
@@ -68,15 +68,15 @@ class BottleNeckBlock(nn.Module):
             # wide -> narrow
             nn.Conv2d(expanded_features, out_features, kernel_size=1),
         )
-        self.layer_scaler = LayerScaler(layer_scaler_init_value, out_features)
-        self.drop_path = StochasticDepth(drop_p, mode="batch")
+        # self.layer_scaler = LayerScaler(layer_scaler_init_value, out_features)
+        # self.drop_path = StochasticDepth(drop_p, mode="batch")
 
 
     def forward(self, x: Tensor) -> Tensor:
         res = x
         x = self.block(x)
-        x = self.layer_scaler(x)
-        x = self.drop_path(x)
+        # x = self.layer_scaler(x)
+        # x = self.drop_path(x)
         x += res
         return x
 
