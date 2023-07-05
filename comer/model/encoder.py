@@ -72,7 +72,7 @@ class BottleNeckBlock(nn.Module):
         # self.drop_path = StochasticDepth(drop_p, mode="batch")
 
 
-    def forward(self, x: Tensor) -> Tensor:
+    def forward(self, x) :
         res = x
         x = self.block(x)
         # x = self.layer_scaler(x)
