@@ -5,7 +5,17 @@
 # Author: lukemelas (github username)
 # Github repo: https://github.com/lukemelas/EfficientNet-PyTorch
 # With adjustments and added comments by workingcoder (github username).
+import math
+from typing import Tuple
 
+import pytorch_lightning as pl
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from einops.einops import rearrange
+from torch import FloatTensor, LongTensor
+
+from .pos_enc import ImgPosEnc
 import re
 import math
 import collections
