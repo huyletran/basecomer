@@ -21,30 +21,25 @@ class Encoder(pl.LightningModule):
     def forward(
         self, img: FloatTensor, img_mask: LongTensor
     ) -> Tuple[FloatTensor, LongTensor]:
-        """encode image to feature
-
-        Parameters
+        """Mã hóa ảnh thành đặc trưng
+        Tham số
         ----------
         img : FloatTensor
             [b, 1, h', w']
         img_mask: LongTensor
             [b, h', w']
-
-        Returns
+        Trả về
         -------
         Tuple[FloatTensor, LongTensor]
             [b, h, w, d], [b, h, w]
         """
-        # extract feature
-        feature, mask = self.model(img, img_mask)
+        # Trích xuất đặc trưng
+        feature = self.model.extract_features(img)  # Trích xuất đặc trưng từ EfficientNet
         feature = self.feature_proj(feature)
-
-        # proj
+        # Phân chia
         feature = rearrange(feature, "b d h w -> b h w d")
-
-        # positional encoding
-        feature = self.pos_enc_2d(feature, mask)
+        # Mã hóa vị trí
+        feature = self.pos_enc_2d(feature, img_mask)
         feature = self.norm(feature)
-
-        # flat to 1-D
-        return feature, mask
+        # Chuyển đổi thành vector 1D
+        return feature, img_mask
