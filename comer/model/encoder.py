@@ -34,18 +34,12 @@ class Encoder(pl.LightningModule):
             [b, h, w, d], [b, h, w]
         """
         # Trích xuất đặc trưng
-        # extract feature
-        feature = self.model.extract_features(img)  # EfficientNet feature extraction
+        feature = self.model.extract_features(img)  # Trích xuất đặc trưng từ EfficientNet
         feature = self.feature_proj(feature)
-    
-        # proj
-        feature = feature.permute(0, 2, 3, 1)
-    
-        # positional encoding
+        # Phân chia
+        feature = rearrange(feature, "b d h w -> b h w d")
+        # Mã hóa vị trí
         feature = self.pos_enc_2d(feature, img_mask)
         feature = self.norm(feature)
-    
-        # flat to 1-D
-        feature = feature.permute(0, 3, 1, 2)
-
+        # Chuyển đổi thành vector 1D
         return feature, img_mask
