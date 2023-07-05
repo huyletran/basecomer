@@ -927,7 +927,7 @@ class EfficientNet(nn.Module):
         """
         # Convolution layers
         x = self.extract_features(inputs)
-        out_mask = x_mask[:,0:4,0:4]
+        out_mask = x_mask
         return x,out_mask
 
     @classmethod
