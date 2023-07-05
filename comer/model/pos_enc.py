@@ -68,14 +68,14 @@ class ImgPosEnc(pl.LightningModule):
 
     def forward(self, x: torch.Tensor, mask: torch.LongTensor) -> torch.Tensor:
         """add image positional encoding to feature
-
+    
         Parameters
         ----------
         x : torch.Tensor
             [b, h, w, d]
         mask: torch.LongTensor
             [b, h, w]
-
+    
         Returns
         -------
         torch.Tensor
@@ -88,21 +88,23 @@ class ImgPosEnc(pl.LightningModule):
             eps = 1e-6
             y_embed = y_embed / (y_embed[:, -1:, :] + eps) * self.scale
             x_embed = x_embed / (x_embed[:, :, -1:] + eps) * self.scale
-
+    
         dim_t = torch.arange(
             0, self.half_d_model, 2, dtype=torch.float, device=self.device
         )
         inv_feq = 1.0 / (self.temperature ** (dim_t / self.half_d_model))
-
-        pos_x = torch.einsum("b h w, d -> b h w d", x_embed, inv_feq)
-        pos_y = torch.einsum("b h w, d -> b h w d", y_embed, inv_feq)
-
-        pos_x = torch.stack((pos_x.sin(), pos_x.cos()), dim=4).flatten(3)
-        pos_y = torch.stack((pos_y.sin(), pos_y.cos()), dim=4).flatten(3)
-        pos = torch.cat((pos_x, pos_y), dim=3)[:,:,:,:256]
-
+    
+        pos_x = torch.conv2d(x_embed.unsqueeze(-1), inv_feq.view(1, 1, 1, -1))
+        pos_y = torch.conv2d(y_embed.unsqueeze(-1), inv_feq.view(1, 1, 1, -1))
+    
+        pos_x = pos_x.squeeze(-1).flatten(2)
+        pos_y = pos_y.squeeze(-1).flatten(2)
+    
+        pos = torch.cat((pos_x, pos_y), dim=2)
+    
         x = x + pos
         return x
+
 
 
 def rotate_every_two(x: torch.FloatTensor):
