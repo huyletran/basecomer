@@ -1003,7 +1003,7 @@ class Encoder(pl.LightningModule):
 
         self.model = EfficientNet.from_name('efficientnet-b0')
 
-        self.feature_proj = nn.Conv2d(1000, d_model, kernel_size=1)
+        self.feature_proj = nn.Conv2d(1280, d_model, kernel_size=1)
 
         self.pos_enc_2d = ImgPosEnc(d_model, normalize=True)
 
