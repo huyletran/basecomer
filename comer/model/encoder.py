@@ -167,7 +167,7 @@ class EfficientNet(nn.Module):
             [6, 320, 1, 3, 1, 1],  # 3x3, 7   ->   7
         ]
         self.dropout_rate = dropout_rate
-        out_channels = self._round_filters(32, width_multi)
+        out_channels = 1
         self.mod1 = ConvBlock(3, out_channels, kernel_size=3, stride=2, groups=1, dilate=1)
 
         in_channels = out_channels
