@@ -121,7 +121,7 @@ class Encoder(pl.LightningModule):
     def __init__(self, d_model: int, growth_rate: int, num_layers: int):
         super().__init__()
 
-        self.model = ConvNextEncoder(in_channels=3, stem_features=64, depths=[3,4,6,4], widths=[256, 512])
+        self.model = ConvNextEncoder(in_channels=1, stem_features=64, depths=[3,4,6,4], widths=[256, 512])
 
         self.feature_proj = nn.Conv2d(512, d_model, kernel_size=1)
 
