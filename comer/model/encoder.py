@@ -1,6 +1,6 @@
 import math
-from typing import Tuple
-
+from typing import Tuple,List
+from torch import Tensor
 import pytorch_lightning as pl
 import torch
 import torch.nn as nn
