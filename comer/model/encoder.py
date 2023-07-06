@@ -142,7 +142,7 @@ def convnext_tiny(pretrained=False,in_22k=False, **kwargs):
 class Encoder(pl.LightningModule):
     def __init__(self, d_model: int, growth_rate: int, num_layers: int):
         super().__init__()
-        self.model = convnext_tiny
+        self.model = ConvNeXt(depths=[3, 3, 9, 3], dims=[96, 192, 384, 768])
         self.feature_proj = nn.Conv2d(768, d_model, kernel_size=1)
         self.pos_enc_2d = ImgPosEnc(d_model, normalize=True)
         self.norm = nn.LayerNorm(d_model)
