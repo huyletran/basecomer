@@ -37,7 +37,7 @@ class Block(nn.Module):
                                     requires_grad=True) if layer_scale_init_value > 0 else None
         self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
 
-    def forward(self, x,x_mask):
+    def forward(self, x):
         input = x
         x = self.dwconv(x)
         x = x.permute(0, 2, 3, 1) # (N, C, H, W) -> (N, H, W, C)
@@ -50,7 +50,7 @@ class Block(nn.Module):
         x = x.permute(0, 3, 1, 2) # (N, H, W, C) -> (N, C, H, W)
 
         x = input + self.drop_path(x)
-        return x,x_mask
+        return x
 
 class ConvNeXt(nn.Module):
     r""" ConvNeXt
@@ -99,11 +99,11 @@ class ConvNeXt(nn.Module):
         self.norm = nn.LayerNorm(dims[-1], eps=1e-6) # final norm layer
 
 
-    def forward(self, x ,x_mask):
+    def forward(self, x):
         for i in range(4):
             x = self.downsample_layers[i](x)
             x = self.stages[i](x)
-        return self.norm(x.mean([-2, -1])),x_mask # global average pooling, (N, C, H, W) -> (N, C)
+        return self.norm(x.mean([-2, -1])) # global average pooling, (N, C, H, W) -> (N, C)
 
 
 class LayerNorm(nn.Module):
@@ -167,7 +167,7 @@ class Encoder(pl.LightningModule):
             [b, h, w, d], [b, h, w]
         """
         # Trích xuất đặc trưng
-        feature, mask = self.model(img, img_mask)
+        feature = self.model(img)
         feature = self.feature_proj(feature)
         # Phân chia
         feature = rearrange(feature, "b d h w -> b h w d")
