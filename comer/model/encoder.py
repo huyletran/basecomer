@@ -167,7 +167,7 @@ class Encoder(pl.LightningModule):
             [b, h, w, d], [b, h, w]
         """
         # Trích xuất đặc trưng
-        feature = self.model.extract_features(img)  # Trích xuất đặc trưng từ EfficientNet
+        feature, mask = self.model(img, img_mask)
         feature = self.feature_proj(feature)
         # Phân chia
         feature = rearrange(feature, "b d h w -> b h w d")
