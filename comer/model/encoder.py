@@ -148,7 +148,7 @@ class Encoder(pl.LightningModule):
     def __init__(self, d_model: int, growth_rate: int, num_layers: int):
         super().__init__()
         self.model = convnext_tiny
-        self.feature_proj = nn.Conv2d(self.model._fc.in_features, d_model, kernel_size=1)
+        self.feature_proj = nn.Conv2d(768, d_model, kernel_size=1)
         self.pos_enc_2d = ImgPosEnc(d_model, normalize=True)
         self.norm = nn.LayerNorm(d_model)
     def forward(
