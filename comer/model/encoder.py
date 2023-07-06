@@ -118,7 +118,7 @@ class ConvNextEncoder(nn.Module):
 
         for stage in self.stages:
             x = stage(x)
-        return x ,x_mask
+        return x ,x_mask[::,0:8,0:8]
 
 class Encoder(pl.LightningModule):
     def __init__(self, d_model: int, growth_rate: int, num_layers: int):
