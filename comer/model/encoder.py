@@ -99,11 +99,11 @@ class ConvNeXt(nn.Module):
         self.norm = nn.LayerNorm(dims[-1], eps=1e-6) # final norm layer
 
 
-    def forward(self, x):
+    def forward(self, x ,x_mask):
         for i in range(4):
             x = self.downsample_layers[i](x)
             x = self.stages[i](x)
-        return self.norm(x.mean([-2, -1])) # global average pooling, (N, C, H, W) -> (N, C)
+        return self.norm(x.mean([-2, -1])),x_mask # global average pooling, (N, C, H, W) -> (N, C)
 
 
 class LayerNorm(nn.Module):
