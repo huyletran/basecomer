@@ -37,7 +37,7 @@ class Block(nn.Module):
                                     requires_grad=True) if layer_scale_init_value > 0 else None
         self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
 
-    def forward(self, x):
+    def forward(self, x,x_mask):
         input = x
         x = self.dwconv(x)
         x = x.permute(0, 2, 3, 1) # (N, C, H, W) -> (N, H, W, C)
@@ -50,7 +50,7 @@ class Block(nn.Module):
         x = x.permute(0, 3, 1, 2) # (N, H, W, C) -> (N, C, H, W)
 
         x = input + self.drop_path(x)
-        return x
+        return x,x_mask
 
 class ConvNeXt(nn.Module):
     r""" ConvNeXt
