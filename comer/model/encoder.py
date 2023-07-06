@@ -163,36 +163,3 @@ class Encoder(pl.LightningModule):
 
         # flat to 1-D
         return feature, mask
-    
-class Encoder(pl.LightningModule):
-    def __init__(self, d_model: int, growth_rate: int, num_layers: int):
-        super().__init__()
-        self.model = ConvNeXt(depths=[3, 3, 9, 3], dims=[96, 192, 384, 768])
-        self.feature_proj = nn.Conv2d(768, d_model, kernel_size=1)
-        self.pos_enc_2d = ImgPosEnc(d_model, normalize=True)
-        self.norm = nn.LayerNorm(d_model)
-    def forward(
-        self, img: FloatTensor, img_mask: LongTensor
-    ) -> Tuple[FloatTensor, LongTensor]:
-        """Mã hóa ảnh thành đặc trưng
-        Tham số
-        ----------
-        img : FloatTensor
-            [b, 1, h', w']
-        img_mask: LongTensor
-            [b, h', w']
-        Trả về
-        -------
-        Tuple[FloatTensor, LongTensor]
-            [b, h, w, d], [b, h, w]
-        """
-        # Trích xuất đặc trưng
-        feature = self.model(img)
-        feature = self.feature_proj(feature)
-        # Phân chia
-        feature = rearrange(feature, "b d h w -> b h w d")
-        # Mã hóa vị trí
-        feature = self.pos_enc_2d(feature, img_mask)
-        feature = self.norm(feature)
-        # Chuyển đổi thành vector 1D
-        return feature, img_mask
